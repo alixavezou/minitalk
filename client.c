@@ -23,7 +23,24 @@ int	ft_char_becomes_binary(pid_t pid, char a)
 		i--;
 	}
 }
-// cette fonction va gérer les éventuelles erreurs
+
+void	ft_check_pid(char *str)
+{
+	int	i;
+
+	i = 0;
+	while (str[i])
+	{
+		if (str[i] >= '0' && str[i] <= '9')
+			i++;
+		else
+		{
+			write(1, "problem with the PID\n", 22);
+			exit(1);
+		}
+	}
+}
+
 void	ft_errors(int argc, char **argv)
 {
 	int	i;
@@ -42,13 +59,7 @@ void	ft_errors(int argc, char **argv)
 	}
 	// verifier que le PID est bien compris entre 0 et 9
 	// + le PID ne doit pas etre = 0 ou à -1
-	if (!(argv[1][i] >= '0' && argv[1][i] <= '9'))
-	{
-		write(1, "problem with the PID\n", 22);
-		exit(1);
-	}
-	else
-		i++;
+	ft_check_pid(argv[1]);
 }
 
 int main(int argc, char **argv)
@@ -59,8 +70,8 @@ int main(int argc, char **argv)
 	i = 0;
 	// Il faut transormer le PID en int car il va être transmis en tant que string alors que c'est un int.
 	//Car meme si tu envoies des numeros dans le terminal l'argument 1 sera considéré comme une chaine de char
-	pid = atoi(argv[1]);
 	ft_errors(argc, argv);
+	pid = atoi(argv[1]);
 	if (argc == 3) // donc, si j'ai bien mon executable + mes 2 args on peut envoyer un signal à mon serveur
 	{
 		while(argv[2][i] != '\0') // tant qu'il y a bien des char dans ma string donc dans mon 2e argument après le PID
