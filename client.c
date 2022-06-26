@@ -1,10 +1,4 @@
-#include <string.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <sys/wait.h>
-#include <signal.h>
-#include <limits.h>
+# include "client.h"
 
 // cette fonction va s'occuper de transformer la string en binaire pour que ce soit compréhensible pour le serveur
 int	ft_char_becomes_binary(pid_t pid, char a)
@@ -29,7 +23,6 @@ int	ft_char_becomes_binary(pid_t pid, char a)
 		i--;
 	}
 }
-
 // cette fonction va gérer les éventuelles erreurs
 void	ft_errors(int argc, char **argv)
 {
