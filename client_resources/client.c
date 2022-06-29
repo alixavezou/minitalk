@@ -1,5 +1,31 @@
 # include "client.h"
 
+// cette fonction va transformer l'int correspondant à la taille de ma string en binaire pour la passer au serveur
+int	ft_int_becomes_binary(int a, pid_t	pid)
+{
+	int	i;
+	int	bit;
+
+	i = 31; // 1 int = 32 bits
+	bit = 0;
+	while (i >= 0)
+	{
+		bit = (a >> i) & 1;
+		if (bit == 1)
+		{
+			if (kill(pid, SIGUSR1) == -1)
+				exit(1);
+		}
+		else
+		{
+			if (kill(pid, SIGUSR2) == -1)
+				exit(1);
+		}
+		usleep(150);
+		i--;
+	}
+	usleep(300000);
+}
 // cette fonction va s'occuper de transformer la string en binaire pour que ce soit compréhensible pour le serveur
 int	ft_char_becomes_binary(char a, pid_t pid)
 {
@@ -24,6 +50,7 @@ int	ft_char_becomes_binary(char a, pid_t pid)
 		usleep(150);
 		i--;
 	}
+	usleep(300000);
 }
 
 void	ft_check_pid(char *str)
@@ -61,7 +88,9 @@ void	ft_errors(int argc, char **argv)
 	}
 	ft_check_pid(argv[1]);
 }
-// il faudra gérer le cas ou le atoi du PID est != 0 et > INT_MAX
+// il faudra gérer le cas ou le atoi du PID est != 0 et > INT_MAX(overflow).
+//Le pid ne peut pas etre = 0. if atoi(argv[1] == 0) = faux.
+
 int main(int argc, char **argv)
 {
 	int		i;
@@ -74,6 +103,7 @@ int main(int argc, char **argv)
 	pid = atoi(argv[1]);
 	if (argc == 3) // donc, si j'ai bien mon executable + mes 2 args on peut envoyer un signal à mon serveur
 	{
+		ft_int_becomes_binary(ft_strlen(argv[2]), pid);
 		while(argv[2][i] != '\0') // tant qu'il y a bien des char dans ma string donc dans mon 2e argument après le PID
 		{
 			ft_char_becomes_binary(argv[2][i], pid); // on procede bien a la conversion de ma string
