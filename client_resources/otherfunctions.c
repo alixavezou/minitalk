@@ -1,9 +1,9 @@
 #include "stddef.h"
 #include "unistd.h"
 
-size_t	ft_strlen(const char *str)
+int	ft_strlen(char *str)
 {
-	size_t	i;
+	int	i;
 
 	i = 0;
 	while (str[i])
@@ -13,7 +13,7 @@ size_t	ft_strlen(const char *str)
 	return (i);
 }
 
-int	ft_atoi(char *str)
+int	ft_atoi(const char *str)
 {
 	int	i;
 	int	nb;

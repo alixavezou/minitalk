@@ -1,33 +1,7 @@
 # include "client.h"
 
-// cette fonction va transformer l'int correspondant à la taille de ma string en binaire pour la passer au serveur
-int	ft_int_becomes_binary(int a, pid_t	pid)
-{
-	int	i;
-	int	bit;
-
-	i = 31; // 1 int = 32 bits
-	bit = 0;
-	while (i >= 0)
-	{
-		bit = (a >> i) & 1;
-		if (bit == 1)
-		{
-			if (kill(pid, SIGUSR1) == -1)
-				exit(1);
-		}
-		else
-		{
-			if (kill(pid, SIGUSR2) == -1)
-				exit(1);
-		}
-		usleep(150);
-		i--;
-	}
-	usleep(300000);
-}
 // cette fonction va s'occuper de transformer la string en binaire pour que ce soit compréhensible pour le serveur
-int	ft_char_becomes_binary(char a, pid_t pid)
+void	ft_char_becomes_binary(char a, pid_t pid)
 {
 	int	i;
 	int bit;
@@ -51,6 +25,32 @@ int	ft_char_becomes_binary(char a, pid_t pid)
 		i--;
 	}
 	usleep(300000);
+}
+// cette fonction va transformer l'int correspondant à la taille de ma string en binaire pour la passer au serveur
+void	ft_int_becomes_binary(int a, pid_t	pid)
+{
+	int	i;
+	int	bit;
+
+	i = 31; // 1 int = 32 bits
+	bit = 0;
+	while (i >= 0)
+	{
+		bit = (a >> i) & 1;
+		if (bit == 1)
+		{
+			if (kill(pid, SIGUSR1) == -1)
+				exit(1);
+		}
+		else
+		{
+			if (kill(pid, SIGUSR2) == -1)
+				exit(1);
+		}
+		usleep(150);
+		i--;
+	}
+	//usleep(300000);
 }
 
 void	ft_check_pid(char *str)
@@ -84,6 +84,11 @@ void	ft_errors(int argc, char **argv)
 	if (argv[1][0] == '\0')
 	{
 		write(1, "no PID\n", 8);
+		exit(1);
+	}
+	if ((ft_atoi(argv[1]) == 0) || (ft_atoi(argv[1]) > INT_MAX))
+	{
+		write(1, "problem of PID\n", 16);
 		exit(1);
 	}
 	ft_check_pid(argv[1]);
