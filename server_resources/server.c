@@ -8,6 +8,7 @@
 
 // On va utiliser une variable globale dans laquelle on va stocker tous les signaux qu'on recevra
 // Puis elle transfèrera dans la variable globale le signal qu'elle reçoit
+char *str = NULL;
 
 void my_handler(int signal)
 {
@@ -21,11 +22,11 @@ int main(void)
 {
 	struct sigaction sa;
 
-	sa.sa_handler = my_handler;
-	sigaction(SIGUSR2, &sa, NULL);
-	sigaction(SIGUSR1, &sa, NULL);
 	printf("pid: %d\n", getpid());
-	while (1)
+	sa.sa_handler = my_handler;
+	sigaction(SIGUSR1, &sa, NULL);
+	sigaction(SIGUSR2, &sa, NULL);
+	while(1)
 		pause();
 	return (0);
 }
