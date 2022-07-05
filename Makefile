@@ -19,13 +19,13 @@ FT_PRINTF = ft_printf/libftprintf.a
 INCLUDE = client.h
 
 C_FILES_CLIENT = client.c \
-				client_utils.c\
+				otherfunctions.c\
 
 C_FILES_SERVER = server.c
 
-PATH_CLIENT = client_srcs
+PATH_CLIENT = client_resources
 
-PATH_SERVER = server_srcs
+PATH_SERVER = server_resources
 
 O_FILES_SERVER = ${C_FILES_SERVER:.c=.o}
 
