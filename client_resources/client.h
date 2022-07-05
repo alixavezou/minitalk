@@ -3,11 +3,7 @@
 
 # include <signal.h>
 # include <limits.h>
-# include <string.h>
-# include <stdio.h>
-# include <stdlib.h>
-# include <unistd.h>
-# include <sys/wait.h>
+# include "../ft_printf/ft_printf.h"
 
 int		ft_strlen(char *str);
 int		ft_atoi(const char *str);

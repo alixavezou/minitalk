@@ -1,10 +1,6 @@
-#include <string.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <sys/wait.h>
-#include <limits.h>
+#include "../ft_printf/ft_printf.h"
 #include <signal.h>
+#include <limits.h>
 
 char *str = NULL; // On va utiliser une variable globale dans laquelle on va stocker tous les char qu'on recevra
 

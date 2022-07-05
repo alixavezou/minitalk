@@ -1,5 +1,4 @@
-#include "stddef.h"
-#include "unistd.h"
+#include "client.h"
 
 int	ft_strlen(char *str)
 {
