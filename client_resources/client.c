@@ -1,6 +1,6 @@
 #include "client.h"
 
-void	send_char_to_server(int pid, char chars, int count_bit)
+void	send_char(int pid, char chars, int count_bit)
 {
 	if (chars & (128 >> count_bit))
 	{
@@ -36,7 +36,7 @@ static	void send_msg_to_server(struct s_client *client)
 	}
 	if (stock->chars >= ft_strlen(stock->str))
 		exit(0);
-	send_char_to_server(stock->server_pid, stock->str[stock->chars], stock->count_bit);
+	send_char(stock->server_pid, stock->str[stock->chars], stock->count_bit);
 }
 
 void	ft_check_pid(char *str)
