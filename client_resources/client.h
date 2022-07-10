@@ -18,7 +18,6 @@ int		ft_atoi(const char *str);
 
 void	ft_errors(int argc, char **argv);
 void	ft_check_pid(char *str);
-void	ft_check_pid_max(int argc, char **argv);
 void	send_char(int pid, char chars, int count_bit);
 
 #endif
