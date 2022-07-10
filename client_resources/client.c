@@ -1,52 +1,44 @@
 #include "client.h"
 
-void	ft_char_becomes_binary(char a, pid_t pid)
+void	send_char_to_server(int pid, char chars, int count_bit)
 {
-	int	i;
-	int bit;
-
-	i = 7;
-	bit = 0;
-	while (i >= 0)
+	if (chars & (128 >> count_bit))
 	{
-		bit = (a >> i) & 1;
-		if (bit == 1)
-		{
-			if (kill(pid, SIGUSR1) == -1)
-				exit(1);
-		}
-		else
-		{
-			if (kill(pid, SIGUSR2) == -1)
-				exit(1);
-		}
-		usleep(150);
-		i--;
+		if (kill(pid, SIGUSR1) == -1)
+			exit(1);
 	}
+	else
+	{
+		if (kill(pid, SIGUSR2) == -1)
+			exit(1);
+	}
+	//usleep(300);
 }
-void	ft_int_becomes_binary(int a, pid_t pid) // int a = la taille de ma string
-{
-	int	i;
-	int	bit;
 
-	i = 31;
-	bit = 0;
-	while (i >= 0)
+static	void send_msg_to_server(struct s_client *client)
+{
+	static struct s_client *stock;
+
+	if (client)
 	{
-		bit = (a >> i) & 1;
-		if (bit == 1)
-		{
-			if (kill(pid, SIGUSR1) == -1)
-				exit(1);
-		}
-		else
-		{
-			if (kill(pid, SIGUSR2) == -1)
-				exit(1);
-		}
-		usleep(150);
-		i--;
+		stock = client;
+		stock->count_bit = 0; //compteur de bits
+		stock->chars = 0;//compteur de chars
 	}
+	else
+	{
+		stock->count_bit++;
+
+		if (stock->count_bit == 8)
+		{
+			stock->count_bit = 0;
+			stock->chars++;
+		}
+	}
+	if (stock->chars >= ft_strlen(stock->str))
+		exit(0);
+	send_char_to_server(stock->server_pid, stock->str[stock->chars], stock->count_bit);
+	//usleep(300);
 }
 
 void	ft_check_pid(char *str)
@@ -89,23 +81,27 @@ void	ft_errors(int argc, char **argv)
 	ft_check_pid(argv[1]);
 }
 
+static void	ft_response(int sig)
+{
+	(void)sig;
+	send_msg_to_server(NULL);
+}
+
 int main(int argc, char **argv)
 {
-	int		i;
-	pid_t	pid;
-
-	i = 0;
+	struct	s_client client;
+	signal(SIGUSR1, ft_response);
 	ft_errors(argc, argv);
-	pid = atoi(argv[1]);
+	client.server_pid = atoi(argv[1]);
+	client.str = argv[2];
+	client.count_bit = 0;
+	client.chars = 0;
+
 	if (argc == 3)
 	{
-		ft_int_becomes_binary(ft_strlen(argv[2]), pid);
-		while(argv[2][i] != '\0')
-		{
-			ft_char_becomes_binary(argv[2][i], pid);
-			i++;
-		}
-		ft_char_becomes_binary('\0', pid);
+		send_msg_to_server(&client);
+		while(1)
+			pause();
+		return (0);
 	}
-	return (0);
 }
