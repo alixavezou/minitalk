@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_countnb.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aavezou <aavezou@student.42.fr>            +#+  +:+       +#+        */
+/*   By: alixavezou <alixavezou@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/06 11:06:30 by aavezou           #+#    #+#             */
-/*   Updated: 2021/12/07 12:10:44 by aavezou          ###   ########.fr       */
+/*   Updated: 2022/07/10 15:01:06 by alixavezou       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,11 +41,6 @@ int	ft_countnbu(unsigned int n)
 	count = 0;
 	if (n == 0)
 		count = 1;
-	if (n < 0)
-	{
-		n = n * -1;
-		count = 1;
-	}
 	while (n > 0)
 	{
 		n = n / 10;
