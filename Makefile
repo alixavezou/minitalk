@@ -18,14 +18,11 @@ FT_PRINTF = ft_printf/libftprintf.a
 
 INCLUDE = client.h
 
-C_FILES_CLIENT = client.c \
-				otherfunctions.c\
+C_FILES_CLIENT = client_resources/client.c \
+				client_resources/otherfunctions.c \
+				client_resources/client2.c
 
-C_FILES_SERVER = server.c
-
-PATH_CLIENT = client_resources
-
-PATH_SERVER = server_resources
+C_FILES_SERVER = server_resources/server.c
 
 O_FILES_SERVER = ${C_FILES_SERVER:.c=.o}
 
@@ -36,10 +33,10 @@ all: ${NAME}
 
 ${NAME}: ${NAME_SERVER} ${NAME_CLIENT}
 
-%.o: $(PATH_SERVER)/%.c
+%.o: server_resources/%.c
 	${CC} ${CFLAGS} -c $< -o $@
 
-%.o: $(PATH_CLIENT)/%.c
+%.o: client_resources/%.c
 	${CC} ${CFLAGS} -I ${INCLUDE} -c $< -o $@
 
 ${NAME_SERVER}: ${O_FILES_SERVER} $(PRINTF)
