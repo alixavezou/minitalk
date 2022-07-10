@@ -13,7 +13,6 @@ void	ft_binary_becomes_char(int signum, int bit, siginfo_t *info)
 {
 	static int	a = 0;
 
-	// printf("bite = %d \n", bit);
 	if (bit < 8)
 	{
 		a = a << 1;
@@ -28,14 +27,12 @@ void	ft_binary_becomes_char(int signum, int bit, siginfo_t *info)
 		a = 0;
 	}
 	kill(info->si_pid, SIGUSR1);
-	//usleep(30);
 }
 
 void	ft_signals_handler(int signum, siginfo_t *info, void *name)
 {
 	static int	count_bit = 0;
 	(void)name;
-	// printf("$$$ le client me parle!!! \n");
 
 	ft_binary_becomes_char(signum, (count_bit % 8), info);
 	count_bit++;
