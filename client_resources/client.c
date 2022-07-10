@@ -12,7 +12,6 @@ void	send_char_to_server(int pid, char chars, int count_bit)
 		if (kill(pid, SIGUSR2) == -1)
 			exit(1);
 	}
-	//usleep(300);
 }
 
 static	void send_msg_to_server(struct s_client *client)
@@ -22,8 +21,8 @@ static	void send_msg_to_server(struct s_client *client)
 	if (client)
 	{
 		stock = client;
-		stock->count_bit = 0; //compteur de bits
-		stock->chars = 0;//compteur de chars
+		stock->count_bit = 0;
+		stock->chars = 0;
 	}
 	else
 	{
@@ -38,7 +37,6 @@ static	void send_msg_to_server(struct s_client *client)
 	if (stock->chars >= ft_strlen(stock->str))
 		exit(0);
 	send_char_to_server(stock->server_pid, stock->str[stock->chars], stock->count_bit);
-	//usleep(300);
 }
 
 void	ft_check_pid(char *str)
@@ -60,9 +58,6 @@ void	ft_check_pid(char *str)
 
 void	ft_errors(int argc, char **argv)
 {
-	int	i;
-
-	i = 0;
 	if (argc != 3)
 	{
 		write(1, "wrong numbers of arguments\n", 28);
