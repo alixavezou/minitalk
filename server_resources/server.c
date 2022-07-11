@@ -74,6 +74,7 @@ void	ft_signals_handler(int signum, siginfo_t *info, void *name)
 	static int	count_bit = 0;
 	(void)name;
 
+	ft_len_to_int(signum, i);
 	ft_binary_becomes_char(signum, ((i - 32) / 8), (count_bit % 8), info, &i);
 	count_bit++;
 	i++;
