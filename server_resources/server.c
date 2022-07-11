@@ -4,10 +4,18 @@
 
 char *str = NULL;
 
-void    ft_putstr_fd(char *s, int fd)
+void	ft_putstr_fd(char *s, int fd)
 {
-	while (s)
-		write(fd, s++, 1);
+	int	i;
+
+	i = 0;
+	if (!s)
+		return ;
+	while (s[i])
+	{
+		write(fd, &s[i], 1);
+		i++;
+	}
 }
 
 void	ft_len_to_int(int signum, int i)
@@ -18,12 +26,17 @@ void	ft_len_to_int(int signum, int i)
 	{
 		len = len << 1;
 		if (signum == SIGUSR1)
+		{
 			len = len + 1;
+		}
 		if (signum == SIGUSR2)
+		{
 			len = len + 0;
+		}
 	}
 	if (i == 31)
 	{
+		// printf("la taille de la str = %d\n", len);
 		str = malloc(sizeof(char) * (len + 1));
 		if (!str)
 			return ;
@@ -31,7 +44,7 @@ void	ft_len_to_int(int signum, int i)
 	}
 }
 
-void	ft_binary_becomes_char(int signum, int index, int bit, siginfo_t *info)
+void	ft_binary_becomes_char(int signum, int index, int bit, int *i)
 {
 	static int	a = 0;
 
@@ -45,27 +58,19 @@ void	ft_binary_becomes_char(int signum, int index, int bit, siginfo_t *info)
 	}
 	if (bit == 7)
 	{
-		printf("je rentre la1\n");
 		if (str)
 		{
-			printf("je rentre la2\n");
+			// printf("je rentre index= %d\n", index);
 			str[index] = a;
 			if (a == '\0')
 			{
-				printf("je rentre la3\n");
 				ft_putstr_fd(str, 1);
-				printf("le pb vient d'ici\n");
 				free(str);
 				str = NULL;
-				//*i = -1;
+				*i = -1;
 			}
 		}
 		a = 0;
-	}
-	if (bit >= 32)
-	{
-		printf("je rentre ici\n");
-		kill(info->si_pid, SIGUSR1);
 	}
 }
 
@@ -75,8 +80,16 @@ void	ft_signals_handler(int signum, siginfo_t *info, void *name)
 	//static int	count_bit = 0;
 	(void)name;
 
-	ft_len_to_int(signum, i);
-	ft_binary_becomes_char(signum, ((i - 32) / 8), (i % 8), info);
+	// printf("le nb de bit %d\n", i);
+	if (i < 32)
+	{
+		ft_len_to_int(signum, i);
+	}
+	else
+	{
+		ft_binary_becomes_char(signum, ((i - 32) / 8), (i % 8), &i);
+		kill(info->si_pid, SIGUSR1);
+	}
 	//count_bit++;
 	i++;
 }
