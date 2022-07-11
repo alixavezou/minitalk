@@ -20,7 +20,7 @@ static	void send_msg_to_server(struct s_client *client)
 			stock->chars++;
 		}
 	}
-	if (stock->chars >= ft_strlen(stock->str))
+	if (stock->chars > ft_strlen(stock->str))
 		exit(0);
 	send_char(stock->server_pid, stock->str[stock->chars], stock->count_bit);
 }
@@ -80,7 +80,9 @@ int main(int argc, char **argv)
 
 	if (argc == 3)
 	{
-		ft_len_to_binary(ft_strlen(argv[2]), client.server_pid);
+		// printf("jsuis ds le argc\n");
+		ft_len_to_binary(ft_strlen(client.str), client.server_pid);
+		// printf("jsuis ds le argc2\n");
 		send_msg_to_server(&client);
 		while(1)
 			pause();
