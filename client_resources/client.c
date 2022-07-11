@@ -54,7 +54,7 @@ void	ft_errors(int argc, char **argv)
 		write(1, "no PID\n", 8);
 		exit(1);
 	}
-	if ((ft_atoi(argv[1]) == 0) || (ft_atoi(argv[1]) > INT_MAX))
+	if ((ft_atoi(argv[1]) == 0) || (ft_atoi(argv[1]) > 4194304))
 	{
 		write(1, "problem of PID\n", 16);
 		exit(1);
@@ -80,6 +80,7 @@ int main(int argc, char **argv)
 
 	if (argc == 3)
 	{
+		ft_len_to_binary(ft_strlen(argv[2]), client.server_pid);
 		send_msg_to_server(&client);
 		while(1)
 			pause();

@@ -19,5 +19,6 @@ int		ft_atoi(const char *str);
 void	ft_errors(int argc, char **argv);
 void	ft_check_pid(char *str);
 void	send_char(int pid, char chars, int count_bit);
+void	ft_len_to_binary(int a, pid_t pid);
 
 #endif
