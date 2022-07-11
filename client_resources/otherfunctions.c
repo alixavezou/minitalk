@@ -15,7 +15,7 @@ int	ft_strlen(char *str)
 int	ft_atoi(const char *str)
 {
 	int	i;
-	int	nb;
+	long	nb;
 	int	signe;
 
 	i = 0;
@@ -34,6 +34,11 @@ int	ft_atoi(const char *str)
 	while (str[i] >= '0' && str[i] <= '9')
 	{
 		nb = nb * 10 + str[i] - '0';
+		if (nb > 2147483647)
+		{
+			printf("error\n");
+			exit(1);
+		}
 		i++;
 	}
 	return (nb * signe);
