@@ -31,7 +31,7 @@ void	ft_len_to_int(int signum, int i)
 	}
 }
 
-void	ft_binary_becomes_char(int signum, int index, int bit, siginfo_t *info, int *i)
+void	ft_binary_becomes_char(int signum, int index, int bit, siginfo_t *info)
 {
 	static int	a = 0;
 
@@ -54,9 +54,10 @@ void	ft_binary_becomes_char(int signum, int index, int bit, siginfo_t *info, int
 			{
 				printf("je rentre la3\n");
 				ft_putstr_fd(str, 1);
+				printf("le pb vient d'ici\n");
 				free(str);
 				str = NULL;
-				*i = -1;
+				//*i = -1;
 			}
 		}
 		a = 0;
@@ -71,12 +72,12 @@ void	ft_binary_becomes_char(int signum, int index, int bit, siginfo_t *info, int
 void	ft_signals_handler(int signum, siginfo_t *info, void *name)
 {
 	static int	i = 0;
-	static int	count_bit = 0;
+	//static int	count_bit = 0;
 	(void)name;
 
 	ft_len_to_int(signum, i);
-	ft_binary_becomes_char(signum, ((i - 32) / 8), (count_bit % 8), info, &i);
-	count_bit++;
+	ft_binary_becomes_char(signum, ((i - 32) / 8), (i % 8), info);
+	//count_bit++;
 	i++;
 }
 
