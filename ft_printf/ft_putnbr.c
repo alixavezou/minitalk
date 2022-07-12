@@ -42,11 +42,6 @@ void	ft_putnbru(unsigned int n)
 	{
 		ft_putchar(n + '0');
 	}
-	// else if (n < 0)
-	// {
-	// 	ft_putchar('-');
-	// 	ft_putnbru(n * (-1));
-	// }
 	else
 	{
 		ft_putnbru(n / 10);
