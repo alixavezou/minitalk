@@ -80,9 +80,7 @@ int main(int argc, char **argv)
 
 	if (argc == 3)
 	{
-		// printf("jsuis ds le argc\n");
 		ft_len_to_binary(ft_strlen(client.str), client.server_pid);
-		// printf("jsuis ds le argc2\n");
 		send_msg_to_server(&client);
 		while(1)
 			pause();

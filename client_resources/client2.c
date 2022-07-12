@@ -23,7 +23,6 @@ void	ft_len_to_binary(int a, pid_t pid)
 	bit = 0;
 	while (i >= 0)
 	{
-
 		bit = (a >> i) & 1;
 		if (bit == 1)
 		{
@@ -36,6 +35,6 @@ void	ft_len_to_binary(int a, pid_t pid)
 				exit(1);
 		}
 		i--;
+		usleep(150);
 	}
-	usleep(150);
 }
