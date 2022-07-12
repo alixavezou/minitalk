@@ -26,17 +26,12 @@ void	ft_len_to_int(int signum, int i)
 	{
 		len = len << 1;
 		if (signum == SIGUSR1)
-		{
 			len = len + 1;
-		}
 		if (signum == SIGUSR2)
-		{
 			len = len + 0;
-		}
 	}
 	if (i == 31)
 	{
-		// printf("la taille de la str = %d\n", len);
 		str = malloc(sizeof(char) * (len + 1));
 		if (!str)
 			return ;
@@ -60,7 +55,6 @@ void	ft_binary_becomes_char(int signum, int index, int bit, int *i)
 	{
 		if (str)
 		{
-			// printf("je rentre index= %d\n", index);
 			str[index] = a;
 			if (a == '\0')
 			{
@@ -69,28 +63,23 @@ void	ft_binary_becomes_char(int signum, int index, int bit, int *i)
 				str = NULL;
 				*i = -1;
 			}
+			a = 0;
 		}
-		a = 0;
 	}
 }
 
 void	ft_signals_handler(int signum, siginfo_t *info, void *name)
 {
 	static int	i = 0;
-	//static int	count_bit = 0;
 	(void)name;
 
-	// printf("le nb de bit %d\n", i);
 	if (i < 32)
-	{
 		ft_len_to_int(signum, i);
-	}
 	else
 	{
 		ft_binary_becomes_char(signum, ((i - 32) / 8), (i % 8), &i);
 		kill(info->si_pid, SIGUSR1);
 	}
-	//count_bit++;
 	i++;
 }
 
