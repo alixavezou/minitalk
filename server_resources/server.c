@@ -28,10 +28,8 @@ void	ft_binary_becomes_char(int signum, int index, int bit, int *i, char **str, 
 		if (signum == SIGUSR2)
 			a = a + 0;
 	}
-	if (bit == 7)
+	if (bit == 7 && *str)
 	{
-		if (*str)
-		{
 			(*str)[index] = a;
 			if (a == '\0')
 			{
@@ -42,7 +40,6 @@ void	ft_binary_becomes_char(int signum, int index, int bit, int *i, char **str, 
 				*i = -1;
 			}
 			a = 0;
-		}
 	}
 }
 
