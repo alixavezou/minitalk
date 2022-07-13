@@ -1,28 +1,49 @@
 #include "client.h"
 
-static	void send_msg_to_server(struct s_client *client)
+void	ft_len_to_binary(int a, pid_t pid)
 {
-	static struct s_client *stock;
+	int	i;
+	int	ret;
 
-	if (client)
+	i = 31;
+	while (i >= 0)
 	{
-		stock = client;
-		stock->count_bit = 0;
-		stock->chars = 0;
-	}
-	else
-	{
-		stock->count_bit++;
-
-		if (stock->count_bit == 8)
+		if ((a >> i) & 1)
+			ret = (kill(pid, SIGUSR1));
+		else
+			ret = (kill(pid, SIGUSR2));
+		if (ret)
 		{
-			stock->count_bit = 0;
-			stock->chars++;
+			write(2, "Error ret\n", 11);
+			exit(1);
 		}
+		usleep(50);
+		i--;
 	}
-	if (stock->chars > ft_strlen(stock->str))
-		exit(0);
-	send_char(stock->server_pid, stock->str[stock->chars], stock->count_bit);
+	usleep(1500);
+}
+
+void ft_send_char(char a, pid_t pid)
+{
+	int	i;
+	int	ret;
+
+	i = 7;
+	while (i >= 0)
+	{
+		if ((a >> i) & 1)
+			ret = (kill(pid, SIGUSR1));
+		else
+			ret = (kill(pid, SIGUSR2));
+		if (ret)
+		{
+			write(2, "Error ret\n", 11);
+			exit(1);
+		}
+		usleep(50);
+		i--;
+	}
+	usleep(1500);
 }
 
 void	ft_check_pid(char *str)
@@ -36,7 +57,7 @@ void	ft_check_pid(char *str)
 			i++;
 		else
 		{
-			write(1, "problem with the PID\n", 22);
+			write(2, "problem with the PID\n", 22);
 			exit(1);
 		}
 	}
@@ -46,44 +67,58 @@ void	ft_errors(int argc, char **argv)
 {
 	if (argc != 3)
 	{
-		write(1, "wrong numbers of arguments\n", 28);
+		write(2, "wrong numbers of arguments\n", 28);
 		exit(1);
 	}
 	if (argv[1][0] == '\0')
 	{
-		write(1, "no PID\n", 8);
+		write(2, "no PID\n", 8);
 		exit(1);
 	}
-	if ((ft_atoi(argv[1]) == 0) || (ft_atoi(argv[1]) > 4194304))
+	if ((ft_atoi(argv[1]) <= 0) || (ft_atoi(argv[1]) > 4194304))
 	{
-		write(1, "problem of PID\n", 16);
+		write(2, "problem of PID\n", 16);
 		exit(1);
 	}
 	ft_check_pid(argv[1]);
 }
 
-static void	ft_response(int sig)
+static void ft_response(int signum, siginfo_t *info, void *unused)
 {
-	(void)sig;
-	send_msg_to_server(NULL);
+	(void)signum;
+	(void)info;
+	(void)unused;
+	write(1, "Well received!\n", 16);
+	exit(0);
+	return ;
+}
+static void	ft_handle_sig_back(void)
+{
+	struct sigaction sa;
+
+	sa.sa_flags = SA_SIGINFO;
+	sa.sa_sigaction = ft_response;
+	sigaction(SIGUSR1, &sa, NULL);
 }
 
 int main(int argc, char **argv)
 {
-	struct	s_client client;
-	signal(SIGUSR1, ft_response);
-	ft_errors(argc, argv);
-	client.server_pid = atoi(argv[1]);
-	client.str = argv[2];
-	client.count_bit = 0;
-	client.chars = 0;
+	int	i;
 
-	if (argc == 3)
+	ft_handle_sig_back();
+	pid_t	pid;
+	i = 0;
+	ft_errors(argc, argv);
+	pid = ft_atoi(argv[1]);
+	ft_len_to_binary(ft_strlen(argv[2]), pid);
+
+	while (argv[2][i])
 	{
-		ft_len_to_binary(ft_strlen(client.str), client.server_pid);
-		send_msg_to_server(&client);
-		while(1)
-			pause();
-		return (0);
+		ft_send_char(argv[2][i], pid);
+		i++;
 	}
+	ft_send_char('\0', pid);
+	while (1)
+		pause();
+	return (0);
 }

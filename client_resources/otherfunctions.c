@@ -36,7 +36,7 @@ int	ft_atoi(const char *str)
 		nb = nb * 10 + str[i] - '0';
 		if (nb > 2147483647)
 		{
-			printf("error\n");
+			write(2, "error atoi\n", 12);
 			exit(1);
 		}
 		i++;
