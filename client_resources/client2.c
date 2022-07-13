@@ -17,10 +17,10 @@ void	ft_len_to_binary(int a, pid_t pid)
 			write(2, "Error ret\n", 11);
 			exit(1);
 		}
-		usleep(50);
+		usleep(30);
 		i--;
 	}
-	usleep(1500);
+	usleep(300);
 }
 
 void ft_send_char(char a, pid_t pid)
@@ -40,8 +40,8 @@ void ft_send_char(char a, pid_t pid)
 			write(2, "Error ret\n", 11);
 			exit(1);
 		}
-		usleep(50);
+		usleep(30);
 		i--;
 	}
-	usleep(1500);
+	usleep(300);
 }

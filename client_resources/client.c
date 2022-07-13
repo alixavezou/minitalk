@@ -58,7 +58,7 @@ static void	ft_handle_sig_back(void)
 
 int main(int argc, char **argv)
 {
-	int	i;
+	long	i;
 
 	ft_handle_sig_back();
 	pid_t	pid;
