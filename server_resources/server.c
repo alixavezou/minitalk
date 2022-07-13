@@ -2,8 +2,6 @@
 #include <signal.h>
 #include <limits.h>
 
-char *str = NULL;
-
 void	ft_putstr_fd(char *s, int fd)
 {
 	int	i;
@@ -18,28 +16,7 @@ void	ft_putstr_fd(char *s, int fd)
 	}
 }
 
-void	ft_len_to_int(int signum, int i)
-{
-	static int	len = 0;
-
-	if (i < 32)
-	{
-		len = len << 1;
-		if (signum == SIGUSR1)
-			len = len + 1;
-		if (signum == SIGUSR2)
-			len = len + 0;
-	}
-	if (i == 31)
-	{
-		str = malloc(sizeof(char) * (len + 1));
-		if (!str)
-			return ;
-		len = 0;
-	}
-}
-
-void	ft_binary_becomes_char(int signum, int index, int bit, int *i)
+void	ft_binary_becomes_char(int signum, int index, int bit, int *i, char **str, siginfo_t *info)
 {
 	static int	a = 0;
 
@@ -53,14 +30,15 @@ void	ft_binary_becomes_char(int signum, int index, int bit, int *i)
 	}
 	if (bit == 7)
 	{
-		if (str)
+		if (*str)
 		{
-			str[index] = a;
+			(*str)[index] = a;
 			if (a == '\0')
 			{
-				ft_putstr_fd(str, 1);
-				free(str);
-				str = NULL;
+				ft_putstr_fd(*str, 1);
+				kill(info->si_pid, SIGUSR1);
+				free(*str);
+				*str = NULL;
 				*i = -1;
 			}
 			a = 0;
@@ -68,26 +46,51 @@ void	ft_binary_becomes_char(int signum, int index, int bit, int *i)
 	}
 }
 
-void	ft_signals_handler(int signum, siginfo_t *info, void *name)
+void	ft_len_to_int(int signum, int i, char **str)
 {
-	static int	i = 0;
-	(void)name;
+	static int	len = 0;
 
 	if (i < 32)
-		ft_len_to_int(signum, i);
-	else
 	{
-		ft_binary_becomes_char(signum, ((i - 32) / 8), (i % 8), &i);
-		kill(info->si_pid, SIGUSR1);
+		len = len << 1;
+		if (signum == SIGUSR1)
+			len = len + 1;
+		if (signum == SIGUSR2)
+			len = len + 0;
 	}
+	if (i == 31)
+	{
+		*str = malloc(sizeof(char) * (len + 1));
+		if (!*str)
+			return ;
+		len = 0;
+	}
+}
+
+static void	ft_signals_handler(int signum, siginfo_t *info, void *unused)
+{
+	static int	i = 0;
+	static char	*str = NULL;
+
+	(void)unused;
+
+	if (i < 32)
+		ft_len_to_int(signum, i, &str);
+	else
+		ft_binary_becomes_char(signum, ((i - 32) / 8), i % 8, &i, &str, info);
 	i++;
 }
 
-int main(void)
+int main(int argc, char **argv)
 {
+	(void) argv;
 	struct sigaction sa;
-
-	printf("server's pid: %d\n", getpid());
+	if (argc > 1)
+	{
+		write(2, "error server's pid has too many args\n", 38);
+		exit(1);
+	}
+	ft_printf("server's pid: %d\n", getpid());
 	sa.sa_sigaction = ft_signals_handler;
 	sa.sa_flags = SA_SIGINFO;
 	sigaction(SIGUSR1, &sa, NULL);
