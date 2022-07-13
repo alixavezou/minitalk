@@ -39,8 +39,8 @@ void	ft_errors(int argc, char **argv)
 
 static void ft_response(int signum, siginfo_t *info, void *unused)
 {
-	(void)signum;
 	(void)info;
+	(void)signum;
 	(void)unused;
 	write(1, "Well received!\n", 16);
 	exit(0);
@@ -51,6 +51,7 @@ static void	ft_handle_sig_back(void)
 {
 	struct sigaction sa;
 
+	sigemptyset(&sa.sa_mask);
 	sa.sa_flags = SA_SIGINFO;
 	sa.sa_sigaction = ft_response;
 	sigaction(SIGUSR1, &sa, NULL);
@@ -66,7 +67,6 @@ int main(int argc, char **argv)
 	ft_errors(argc, argv);
 	pid = ft_atoi(argv[1]);
 	ft_len_to_binary(ft_strlen(argv[2]), pid);
-
 	while (argv[2][i])
 	{
 		ft_send_char(argv[2][i], pid);
