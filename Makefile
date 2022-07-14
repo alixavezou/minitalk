@@ -19,8 +19,7 @@ FT_PRINTF = ft_printf/libftprintf.a
 INCLUDE = client.h
 
 C_FILES_CLIENT = client_resources/client.c \
-				client_resources/otherfunctions.c \
-				client_resources/client2.c
+				client_resources/client_utils.c \
 
 C_FILES_SERVER = server_resources/server.c
 
