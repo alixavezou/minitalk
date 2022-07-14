@@ -4,18 +4,6 @@
 
 char	*g_str = NULL;
 
-int	ft_strlen(const char *str)
-{
-	int	i;
-
-	i = 0;
-	while (str[i])
-	{
-		i++;
-	}
-	return (i);
-}
-
 char	*ft_strjoin(char const *s1, char const *s2)
 {
 	int		i;
@@ -26,7 +14,7 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	j = 0;
 	if (!s1 || !s2)
 		return (NULL);
-	buffer = malloc(sizeof(char) * (ft_strlen(s1) + ft_strlen(s2) + 1));
+	buffer = malloc(sizeof(char) * (ft_strlen(s1) + ft_strlen(s2) + 2));
 	if (!buffer)
 		return (NULL);
 	while (s1[i])
@@ -42,20 +30,6 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	}
 	buffer[i + j] = '\0';
 	return (buffer);
-}
-
-void	ft_putstr_fd(char *s, int fd)
-{
-	int	i;
-
-	i = 0;
-	if (!s)
-		return ;
-	while (s[i])
-	{
-		write(fd, &s[i], 1);
-		i++;
-	}
 }
 
 static void	add_char_to_str(char c)
@@ -113,10 +87,7 @@ static void	ft_signals_handler(int signum, siginfo_t *info, void *unused)
 		{
 			g_str = (char *)malloc(sizeof(char));
 			if (!g_str)
-			{
-				ft_putstr_fd("Malloc error\n", 2);
 				return ;
-			}
 			g_str[0] = '\0';
 		}
 		started = 1;
@@ -133,8 +104,9 @@ static void	ft_signals_handler(int signum, siginfo_t *info, void *unused)
 
 int main(int argc, char **argv)
 {
-	struct sigaction	s_action;
+	struct sigaction	sa;
 
+	sigemptyset(&sa.sa_mask);
 	(void)argv;
 	if (argc > 1)
 	{
@@ -142,11 +114,10 @@ int main(int argc, char **argv)
 		exit(1);
 	}
 	ft_printf("server's pid: %d\n", getpid());
-	sigemptyset(&s_action.sa_mask);
-	s_action.sa_sigaction = &ft_signals_handler;
-	s_action.sa_flags = SA_SIGINFO;
-	sigaction(SIGUSR1, &s_action, NULL);
-	sigaction(SIGUSR2, &s_action, NULL);
+	sa.sa_sigaction = &ft_signals_handler;
+	sa.sa_flags = SA_SIGINFO;
+	sigaction(SIGUSR1, &sa, NULL);
+	sigaction(SIGUSR2, &sa, NULL);
 	while(1)
 		pause();
 	return (0);
