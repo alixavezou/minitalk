@@ -1,27 +1,27 @@
-#include "server.h"
+// #include "server.h"
 
-int	ft_strlen(const char *str)
-{
-	int	i;
+// int	ft_strlen(const char *str)
+// {
+// 	int	i;
 
-	i = 0;
-	while (str[i])
-	{
-		i++;
-	}
-	return (i);
-}
+// 	i = 0;
+// 	while (str[i])
+// 	{
+// 		i++;
+// 	}
+// 	return (i);
+// }
 
-void	ft_putstr_fd(char *s, int fd)
-{
-	int	i;
+// void	ft_putstr_fd(char *s, int fd)
+// {
+// 	int	i;
 
-	i = 0;
-	if (!s)
-		return ;
-	while (s[i])
-	{
-		write(fd, &s[i], 1);
-		i++;
-	}
-}
+// 	i = 0;
+// 	if (!s)
+// 		return ;
+// 	while (s[i])
+// 	{
+// 		write(fd, &s[i], 1);
+// 		i++;
+// 	}
+// }
