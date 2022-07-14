@@ -2,6 +2,48 @@
 #include <signal.h>
 #include <limits.h>
 
+char	*g_str = NULL;
+
+int	ft_strlen(const char *str)
+{
+	int	i;
+
+	i = 0;
+	while (str[i])
+	{
+		i++;
+	}
+	return (i);
+}
+
+char	*ft_strjoin(char const *s1, char const *s2)
+{
+	int		i;
+	int		j;
+	char	*buffer;
+
+	i = 0;
+	j = 0;
+	if (!s1 || !s2)
+		return (NULL);
+	buffer = malloc(sizeof(char) * (ft_strlen(s1) + ft_strlen(s2) + 1));
+	if (!buffer)
+		return (NULL);
+	while (s1[i])
+	{
+		buffer[i] = s1[i];
+		i++;
+	}
+	while (s2[j])
+	{
+		buffer[i + j] = s2[j];
+		i++;
+		j++;
+	}
+	buffer[i + j] = '\0';
+	return (buffer);
+}
+
 void	ft_putstr_fd(char *s, int fd)
 {
 	int	i;
@@ -16,82 +58,95 @@ void	ft_putstr_fd(char *s, int fd)
 	}
 }
 
-void	ft_binary_becomes_char(int signum, int index, int bit, int *i, char **str, siginfo_t *info)
+static void	add_char_to_str(char c)
 {
-	static int	a = 0;
+	char	*tempo;
+	char	d[2];
 
-	if (bit < 8)
-	{
-		a = a << 1;
-		if (signum == SIGUSR1)
-			a = a + 1;
-		if (signum == SIGUSR2)
-			a = a + 0;
-	}
-	if (bit == 7 && *str)
-	{
-			(*str)[index] = a;
-			if (a == '\0')
-			{
-				ft_putstr_fd(*str, 1);
-				kill(info->si_pid, SIGUSR1);
-				free(*str);
-				*str = NULL;
-				*i = -1;
-			}
-			a = 0;
-	}
+	d[0] = c;
+	d[1] = '\0';
+	tempo = g_str;
+	g_str = ft_strjoin(tempo, d);
+	free(tempo);
 }
 
-void	ft_len_to_int(int signum, int i, char **str)
+void	ft_binary_becomes_char(int signum, siginfo_t *info)
 {
-	static int	len = 0;
+	static int	bit = 0;
+	static int	str_received = 0;
+	static char	a = 0;
 
-	if (i < 32)
+	if (signum == SIGUSR1)
+		a = a + 1;
+	if (signum == SIGUSR2)
+		a = a + 0;
+	if (++bit == 8)
 	{
-		len = len << 1;
-		if (signum == SIGUSR1)
-			len = len + 1;
-		if (signum == SIGUSR2)
-			len = len + 0;
+			add_char_to_str(a);
+			if (a == '\0')
+			{
+				str_received = 1;
+				ft_putstr_fd(g_str, 1);
+				kill(info->si_pid, SIGUSR1);
+				free(g_str);
+				g_str = NULL;
+			}
+			bit = 0;
+			a = 0;
 	}
-	if (i == 31)
-	{
-		*str = malloc(sizeof(char) * (len + 1));
-		if (!*str)
-			return ;
-		len = 0;
-	}
+	else
+		a = a << 1;
+	if (str_received == 0)
+		kill(info->si_pid, SIGUSR2);
+	str_received = 0;
 }
 
 static void	ft_signals_handler(int signum, siginfo_t *info, void *unused)
 {
-	static int	i = 0;
-	static char	*str = NULL;
+	static int	bit = 0;
+	static int	started = 0;
 
 	(void)unused;
-
-	if (i < 32)
-		ft_len_to_int(signum, i, &str);
-	else
-		ft_binary_becomes_char(signum, ((i - 32) / 8), i % 8, &i, &str, info);
-	i++;
+	if (started == 0)
+	{
+		if (g_str == NULL)
+		{
+			g_str = (char *)malloc(sizeof(char));
+			if (!g_str)
+			{
+				ft_putstr_fd("Malloc error\n", 2);
+				return ;
+			}
+			g_str[0] = '\0';
+		}
+		started = 1;
+		kill(info->si_pid, SIGUSR2);
+		return ;
+	}
+	ft_binary_becomes_char(signum, info);
+	if (g_str == NULL)
+		started = 0;
+	bit++;
+	if (bit == 8)
+		bit = 0;
 }
 
 int main(int argc, char **argv)
 {
-	(void) argv;
-	struct sigaction sa;
+	struct sigaction	s_action;
+
+	(void)argv;
 	if (argc > 1)
 	{
 		write(2, "error server's pid has too many args\n", 38);
 		exit(1);
 	}
 	ft_printf("server's pid: %d\n", getpid());
-	sa.sa_sigaction = ft_signals_handler;
-	sa.sa_flags = SA_SIGINFO;
-	sigaction(SIGUSR1, &sa, NULL);
-	sigaction(SIGUSR2, &sa, NULL);
+	sigemptyset(&s_action.sa_mask);
+	s_action.sa_sigaction = &ft_signals_handler;
+	s_action.sa_flags = SA_SIGINFO;
+	sigaction(SIGUSR1, &s_action, NULL);
+	sigaction(SIGUSR2, &s_action, NULL);
 	while(1)
 		pause();
 	return (0);
