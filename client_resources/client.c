@@ -89,6 +89,11 @@ int main(int argc, char **argv)
     sigaction(SIGUSR2, &sa, NULL);
     pid = ft_atoi(argv[1]);
     g_str = argv[2];
+	if (kill(pid, SIGUSR1) == -1)
+	{
+		write(2, "wrong PID\n", 11);
+		exit(1);
+	}
     kill(pid, SIGUSR1);
     while (1)
         pause();
